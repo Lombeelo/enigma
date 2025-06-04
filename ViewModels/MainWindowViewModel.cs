@@ -15,13 +15,13 @@ namespace enigma.ViewModels
         /// <summary>
         /// Положения роторов (всего 3 ротора).
         /// </summary>
-        public List<char> Rotors { get; } = null!;
+        public List<char> Rotors { get; set; }
 
         /// <summary>
         /// Коммутационная панель.
         /// Максимум 13 пар.
         /// </summary>
-        public List<connection> Connections { get; }
+        public List<connection> Connections { get; set; }
 
         /// <summary>
         /// Текст для шифра.
@@ -44,7 +44,7 @@ namespace enigma.ViewModels
         /// <summary>
         /// Энигма.
         /// </summary>
-        public Enigma Enigma { get; }
+        public Enigma Enigma { get; set; }
 
         /// <summary>
         /// Шифровать текст.
@@ -52,9 +52,35 @@ namespace enigma.ViewModels
         public ICommand EncodeCommand { get; }
 
         /// <summary>
+        /// Сброс параметров Энигмы.
+        /// </summary>
+        public ICommand RestartEnigmaCommand { get; }
+
+        /// <summary>
         /// Конструктор.
         /// </summary>
         public MainWindowViewModel()
+        {
+            RestartEnigma();
+
+            EncodeCommand = ReactiveCommand.Create(() =>
+            {
+                if (string.IsNullOrEmpty(InputText))
+                    return;
+
+                OutputText = Enigma.Encode(InputText);
+                History.Add(new HistoryItem(InputText, OutputText));
+
+                InputText = string.Empty;
+            });
+
+            RestartEnigmaCommand = ReactiveCommand.Create(RestartEnigma);
+        }
+
+        /// <summary>
+        /// Сброс параметров Энигмы.
+        /// </summary>
+        public void RestartEnigma()
         {
             Rotors = new()
             {
@@ -72,17 +98,6 @@ namespace enigma.ViewModels
             {
                 rotor_starting_positions = Rotors.ToArray(),
                 connections = Connections.ToArray()
-            });
-
-            EncodeCommand = ReactiveCommand.Create(() =>
-            {
-                if (string.IsNullOrEmpty(InputText)) 
-                    return;
-
-                OutputText = Enigma.Encode(InputText);
-                History.Add(new HistoryItem(InputText, OutputText));
-
-                InputText = string.Empty;
             });
         }
     }

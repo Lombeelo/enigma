@@ -21,6 +21,7 @@
 			<TextBox Grid.Row="0" Watermark="Введите текст для его шифрования"
                      Text="{Binding InputText, Converter={StaticResource UpperConverter}}" />
 			<Button  Grid.Row="1" Margin="0 15" Content="Шифровать" Command="{Binding EncodeCommand}" />
+            <Button  Grid.Row="1" Margin="0 15" HorizontalAlignment="Right" Content="Сброс" Command="{Binding RestartEnigmaCommand}" />
 			<TextBox Grid.Row="2" IsReadOnly="True" Watermark="Здесь будет зашифрованный текст"
                      Text="{Binding OutputText}" />
 		</Grid>
